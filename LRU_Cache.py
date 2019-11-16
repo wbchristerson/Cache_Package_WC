@@ -50,9 +50,18 @@ class LRUCache(Cache):
             self.key_node_map[key].add_node_after(self.head)
 
     def __evict_LRU_entry(self):
+        """Function to remove the least recently used entry from the cache;
+            it is assumed that the cache has at least one entry in it
+
+            Args: None
+
+            Returns:
+                LRUNode - the evicted node, now without links to the internal
+                 linked list
+        """
         self.size -= 1
         del self.key_node_map[self.tail.prev.key]
-        self.tail.prev.remove_node()
+        return self.tail.prev.remove_node()
 
     def __is_key_in_cache(self, key):
         """Function to check if a key is present in the cache
