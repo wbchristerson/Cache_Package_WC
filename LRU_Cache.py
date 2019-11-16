@@ -20,10 +20,9 @@ class LRUCache(Cache):
                 None; if present, the (key, value) pair is marked as the most
                 recently queried
         """
-        if self.is_key_in_cache(key):
+        if self.__is_key_in_cache(key):
             matching_node = self.key_node_map[key]
-            matching_node.remove_node()
-            matching_node.add_node_after(self.head)
+            self.__mark_as_most_recent(matching_node)
             return matching_node.value
         else:
             return None
@@ -40,7 +39,20 @@ class LRUCache(Cache):
                 None; cache is updated to mark the (key, value) pair as the most
                 recently queried
         """
-        pass
+        if self.__is_key_in_cache(key):
+            self.key_node_map[key].value = value
+            self.__mark_as_most_recent(self.key_node_map[key])
+        else:
+            if self.is_at_capacity():
+                self.__evict_LRU_entry()
+            self.size += 1
+            self.key_node_map[key] = LRUNode(key, value)
+            self.key_node_map[key].add_node_after(self.head)
+
+    def __evict_LRU_entry(self):
+        self.size -= 1
+        del self.key_node_map[self.tail.prev.key]
+        self.tail.prev.remove_node()
 
     def __is_key_in_cache(self, key):
         """Function to check if a key is present in the cache
@@ -52,3 +64,16 @@ class LRUCache(Cache):
                 boolean
         """
         return key in self.key_node_map
+
+    def __mark_as_most_recent(self, cache_entry):
+        """Given an LRUNode cache_entry which is present in the cache, mark it
+            internally as the most recently queried
+
+            Args:
+                cache_entry (LRUNode) - node to be marked
+
+            Returns:
+                None
+        """
+        cache_entry.remove_node()
+        cache_entry.add_node_after(self.head)

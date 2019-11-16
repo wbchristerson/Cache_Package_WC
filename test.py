@@ -4,6 +4,7 @@ from CacheNode import CacheNode
 from LRUNode import LRUNode
 from LFUNode import LFUNode
 from Cache import Cache
+from LRU_Cache import LRUCache
 
 class TestCacheNode(unittest.TestCase):
     def setUp(self):
@@ -71,6 +72,33 @@ class TestCache(unittest.TestCase):
         self.assertEqual(self.cache_B.size, 0, "Cache B has an incorrect size")
         self.assertEqual(len(self.cache_A.key_node_map), 0, "Cache A's key node map is not the correct size")
         self.assertEqual(len(self.cache_B.key_node_map), 0, "Cache B's key node map is not the correct size")
+
+    def test_capacity_check(self):
+        self.assertEqual(self.cache_A.is_at_capacity(), False, "Cache A is incorrectly listed as at capacity")
+        self.assertEqual(self.cache_B.is_at_capacity(), False, "Cache B is incorrectly listed as at capacity")
+
+class TestLRUCache(unittest.TestCase):
+    def setUp(self):
+        self.lru_cache = LRUCache(3)
+        self.lru_cache.put_key_value(1,3)
+        self.lru_cache.put_key_value(2,5)
+
+    def test_get_value(self):
+        self.assertEqual(self.lru_cache.get_value(1), 3, "Incorrect value for 1")
+        self.assertEqual(self.lru_cache.get_value(2), 5, "Incorrect value for 2")
+        self.assertEqual(self.lru_cache.get_value(3), None, "Incorrect value for key not in cache")
+
+    def test_put_key_value(self):
+        self.lru_cache.put_key_value(3,7)
+        self.lru_cache.put_key_value(4,9)
+        self.assertEqual(self.lru_cache.get_value(1), None, "Incorrect value for evicted key 1")
+        self.assertEqual(self.lru_cache.get_value(2), 5, "Incorrect value for key 2")
+        self.lru_cache.put_key_value(5,11)
+        self.assertEqual(self.lru_cache.get_value(3), None, "Incorrect value for evicted key 3")
+        self.assertEqual(self.lru_cache.get_value(4), 9, "Incorrect value for key 4")
+        self.lru_cache.put_key_value(2,8)
+        self.lru_cache.put_key_value(6,13)
+        self.assertEqual(self.lru_cache.get_value(5), None, "Incorrect value for evicted key 5")
 
 if __name__ == '__main__':
     unittest.main()
