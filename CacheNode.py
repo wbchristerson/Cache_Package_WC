@@ -1,11 +1,11 @@
 class CacheNode:
     """Basic node class for use in a doubly linked list"""
-    def __init__(self, key : int, prev = None, next = None) -> None:
+    def __init__(self, key, prev = None, next = None):
         self.key = key
         self.prev = prev
         self.next = next
 
-    def remove_node(self) -> CacheNode:
+    def remove_node(self):
         """Function to remove a node from a linked list by updating its
             previous and next properties
 
@@ -23,11 +23,12 @@ class CacheNode:
         self.next = None
         return self
 
-    def add_node_after(self, other_node: CacheNode) -> None:
+    def add_node_after(self, other_node):
         """Function to add a node to a linked list
 
             Args:
                 other_node: the node after which to place this instance node
+                    which must not be None
 
             Returns:
                 None

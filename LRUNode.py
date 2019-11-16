@@ -1,3 +1,5 @@
+from CacheNode import CacheNode
+
 class LRUNode(CacheNode):
     def __init__(self, key, value, prev = None, next = None):
         super().__init__(key, prev, next)
