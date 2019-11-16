@@ -3,7 +3,7 @@ class Cache:
     def __init__(self, capacity = 10):
         self.capacity = capacity
         self.size = 0
-        self.hash_map = dict()
+        self.key_node_map = dict()
 
     def is_at_capacity(self):
         return self.size == self.capacity
