@@ -1,13 +1,42 @@
 class CacheNode:
-    def __init__(self, key, prev = None, next = None):
+    """Basic node class for use in a doubly linked list"""
+    def __init__(self, key : int, prev = None, next = None) -> None:
         self.key = key
         self.prev = prev
         self.next = next
 
-    def remove_node(self):
-        if not (self.next is None):
+    def remove_node(self) -> CacheNode:
+        """Function to remove a node from a linked list by updating its
+            previous and next properties
+
+            Args:
+                None
+
+            Returns:
+                CacheNode: the newly remove linked list node
+        """
+        if self.next is not None:
             self.next.prev = self.prev
-        if not (self.prev is None):
+        if self.prev is not None:
             self.prev.next = self.next
         self.prev = None
         self.next = None
+        return self
+
+    def add_node_after(self, other_node: CacheNode) -> None:
+        """Function to add a node to a linked list
+
+            Args:
+                other_node: the node after which to place this instance node
+
+            Returns:
+                None
+        """
+        if other_node is None:
+            raise ValueError("Node to insert node after is of None type")
+        else:
+            if other_node.next is not None:
+                other_node.next.prev = self
+            self.next = other_node.next
+            self.prev = other_node
+            other_node.next = self
