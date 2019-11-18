@@ -20,7 +20,7 @@ class LRUCache(Cache):
                 None; if present, the (key, value) pair is marked as the most
                 recently queried
         """
-        if self.__is_key_in_cache(key):
+        if self.is_key_in_cache(key):
             matching_node = self.key_node_map[key]
             self.__mark_as_most_recent(matching_node)
             return matching_node.value
@@ -36,20 +36,34 @@ class LRUCache(Cache):
                 value (int) - value that is being placed
 
             Returns:
-                None; cache is updated to mark the (key, value) pair as the most
-                recently queried
+                None
         """
-        if self.__is_key_in_cache(key):
+        self.put_key_value_internally(key, value)
+
+    def put_key_value_internally(self, key, value):
+        """Same functionality as put_key_value but the resulting node is not
+            returned
+
+            Args:
+                key (int) - key that is being placed
+                value (int) - value that is being placed
+
+            Returns:
+                updated node; cache is updated to mark the (key, value) pair as
+                the most recently queried
+        """
+        if self.is_key_in_cache(key):
             self.key_node_map[key].value = value
             self.__mark_as_most_recent(self.key_node_map[key])
         else:
             if self.is_at_capacity():
-                self.__evict_LRU_entry()
+                self.evict_LRU_entry()
             self.size += 1
             self.key_node_map[key] = LRUNode(key, value)
             self.key_node_map[key].add_node_after(self.head)
+        return self.key_node_map[key]
 
-    def __evict_LRU_entry(self):
+    def evict_LRU_entry(self):
         """Function to remove the least recently used entry from the cache;
             it is assumed that the cache has at least one entry in it
 
@@ -62,17 +76,6 @@ class LRUCache(Cache):
         self.size -= 1
         del self.key_node_map[self.tail.prev.key]
         return self.tail.prev.remove_node()
-
-    def __is_key_in_cache(self, key):
-        """Function to check if a key is present in the cache
-
-            Args:
-                key (int) - key that is being checked
-
-            Returns:
-                boolean
-        """
-        return key in self.key_node_map
 
     def __mark_as_most_recent(self, cache_entry):
         """Given an LRUNode cache_entry which is present in the cache, mark it

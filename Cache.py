@@ -16,3 +16,14 @@ class Cache:
                 boolean
         """
         return self.size == self.capacity
+
+    def is_key_in_cache(self, key):
+        """Function to check if a key is present in the cache
+
+            Args:
+                key (int) - key that is being checked
+
+            Returns:
+                boolean
+        """
+        return key in self.key_node_map
