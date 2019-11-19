@@ -1,4 +1,4 @@
-from LRUCache import LRUCache
+from LRU_Cache import LRUCache
 
 class SubLRUCache(LRUCache):
     def __init__(self, capacity, top_level_frequency):
