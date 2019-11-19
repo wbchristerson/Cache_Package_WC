@@ -23,7 +23,11 @@ class LFUCache(Cache):
                 is updated
         """
         if self.is_key_in_cache(key):
-            pass
+            node_entry, frequency_node = self.__remove_key(key)
+            if frequency_node.next.key != frequency_node.key + 1:
+                self.__create_frequency_node_after(frequency_node)
+            self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
+            return node_entry.value
         else:
             return None
 
@@ -40,24 +44,55 @@ class LFUCache(Cache):
                 new frequency
         """
         if self.is_key_in_cache(key):
-            entry_node = self.key_node_map[key]
+            entry_node, entry_frequency_node = self.__remove_key(key)
             entry_node.value = value
-            entry_node.remove_node()
-            self.key_to_frequency_node[key].frequency_cache.size -= 1
-            entry_frequency_node = self.key_to_frequency_node[key]
             if entry_frequency_node.next.key != entry_frequency_node.key + 1:
-                __create_frequency_node_after(entry_frequency_node)
-            del self.key_to_frequency_node[key].frequency_cache.key_node_map[key]
-            self.key_to_frequency_node[key] = self.key_to_frequency_node[key].next
-            y = self.key_to_frequency_node[key].frequency_cache
-            y.size += 1
-            entry_node.add_node_after(y.head)
-            y.key_node_map[key] = entry_node
+                self.__create_frequency_node_after(entry_frequency_node)
+            self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
         elif self.is_at_capacity():
             self.__evict_least_frequent_entry()
             self.__add_new_entry(key, value)
         else:
             self.__add_new_entry(key, value)
+
+    def __add_entry_to_frequency_node(entry_node, frequency_node):
+        """Given an LRUCache node entry_node and a frequency_node, insert
+            entry_node into frequency_node's LRU cache
+
+            Args:
+                entry_node (LRUNode) - node to be entered into cache
+                frequency_node (LFUNode) - frequency node at which to add LRUNode
+
+            Returns:
+                None
+        """
+        y = frequency_node.frequency_cache
+        if y.size == y.capacity:
+            raise ValueError("Frequency (LRU) cache is already at capacity!")
+        self.key_to_frequency_node[entry_node.key] = frequency_node
+        y.size += 1
+        entry_node.add_node_after(y.head)
+        y.key_node_map[entry_node.key] = entry_node
+
+    def __remove_key(key):
+        """Function to remove the node corresponding to a specific key from the
+            cache; it is assumed that the key is present in the cache
+
+            Args:
+                key (int) - key to remove
+
+            Returns:
+                entry_node (LRUNode) - corresponds to key removed
+                entry_frequency_node (LFUNode) - frequency node containing key removed
+        """
+        entry_node = self.key_node_map[key]
+        entry_frequency_node = self.key_to_frequency_node[key]
+
+        entry_node.remove_node()
+        self.key_to_frequency_node[key].frequency_cache.size -= 1
+        del self.key_to_frequency_node[key].frequency_cache.key_node_map[key]
+        del. self.key_to_frequency_node[key]
+        return entry_node, entry_frequency_node
 
     def __create_frequency_node_after(frequency_node):
         """Function to create a new top-level frequency node which has frequency
