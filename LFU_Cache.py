@@ -42,18 +42,39 @@ class LFUCache(Cache):
         if self.is_key_in_cache(key):
             entry_node = self.key_node_map[key]
             entry_node.value = value
+            entry_node.remove_node()
+            self.key_to_frequency_node[key].frequency_cache.size -= 1
             entry_frequency_node = self.key_to_frequency_node[key]
-            if entry_frequency_node.next.key == entry_frequency_node.key + 1:
-                entry_node.top_level_frequency += 1
-                
-                self.key_to_frequency_node[key] = entry_frequency_node.next
-            else:
-                pass
+            if entry_frequency_node.next.key != entry_frequency_node.key + 1:
+                __create_frequency_node_after(entry_frequency_node)
+            del self.key_to_frequency_node[key].frequency_cache.key_node_map[key]
+            self.key_to_frequency_node[key] = self.key_to_frequency_node[key].next
+            y = self.key_to_frequency_node[key].frequency_cache
+            y.size += 1
+            entry_node.add_node_after(y.head)
+            y.key_node_map[key] = entry_node
         elif self.is_at_capacity():
             self.__evict_least_frequent_entry()
             self.__add_new_entry(key, value)
         else:
             self.__add_new_entry(key, value)
+
+    def __create_frequency_node_after(frequency_node):
+        """Function to create a new top-level frequency node which has frequency
+            key one more than that of the given frequency_node; it is assumed
+            that the frequency frequency_node.key + 1 does not exist in the
+            cache at the start of this function
+
+            Args:
+                frequency_node (LFUNode)
+
+            Returns:
+                None
+        """
+        current_frequency = frequency_node.key
+        new_entry = LFUNode(current_frequency+1, self.capacity)
+        self.key_to_frequency_node[current_frequency+1] = new_entry
+        new_entry.add_node_after(frequency_node)
 
     def __add_new_entry(self, key, value):
         """Function to add a new (key, value) pair to the cache; it is assumed
