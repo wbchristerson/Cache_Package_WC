@@ -7,7 +7,7 @@ class LFUCache(Cache):
         super().__init__(capacity)
         self.head = LFUNode(0, capacity)
         self.tail = LFUNode(0, capacity)
-        self.head.add_node_after(self.tail)
+        self.tail.add_node_after(self.head)
         self.key_to_frequency_node = dict()
 
     def get_value(self, key):
@@ -91,7 +91,7 @@ class LFUCache(Cache):
         entry_node.remove_node()
         self.key_to_frequency_node[key].frequency_cache.size -= 1
         del self.key_to_frequency_node[key].frequency_cache.key_node_map[key]
-        del. self.key_to_frequency_node[key]
+        del self.key_to_frequency_node[key]
         return entry_node, entry_frequency_node
 
     def __create_frequency_node_after(frequency_node):

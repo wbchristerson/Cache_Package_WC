@@ -5,6 +5,7 @@ from LRUNode import LRUNode
 from LFUNode import LFUNode
 from Cache import Cache
 from LRU_Cache import LRUCache
+from LFU_Cache import LFUCache
 
 class TestCacheNode(unittest.TestCase):
     def setUp(self):
@@ -99,6 +100,28 @@ class TestLRUCache(unittest.TestCase):
         self.lru_cache.put_key_value(2,8)
         self.lru_cache.put_key_value(6,13)
         self.assertEqual(self.lru_cache.get_value(5), None, "Incorrect value for evicted key 5")
+
+class TestLFUCache(unittest.TestCase):
+    def setUp(self):
+        self.lfu_cache_1 = LFUCache(1)
+
+    def test_capacity_one(self):
+        self.assertEqual(self.lfu_cache_1.size, 0, "Initial size of cache 1 is not 0")
+        self.assertEqual(self.lfu_cache_1.capacity, 1, "Initial capacity of cache 1 is not 1")
+        self.assertEqual(len(self.lfu_cache_1.key_node_map), 0, "Initial map size of cache 1 is not 0")
+        self.assertEqual(len(self.lfu_cache_1.key_to_frequency_node), 0,\
+            "Initial map size of key to frequency node in cache 1 is not 0")
+        self.assertEqual(self.lfu_cache_1.head.key, 0, "Head key is not 0")
+        self.assertEqual(self.lfu_cache_1.tail.key, 0, "Tail key is not 0")
+        self.assertEqual(self.lfu_cache_1.head.next, self.lfu_cache_1.tail, "Head next does not match tail")
+        self.assertEqual(self.lfu_cache_1.tail.prev, self.lfu_cache_1.head, "Tail prev does not match head")
+        self.assertEqual(self.lfu_cache_1.head.prev, None, "Head does not have None prev")
+        self.assertEqual(self.lfu_cache_1.tail.next, None, "Tail does not have None next")
+
+        head_fc = self.lfu_cache_1.head.frequency_cache
+        self.assertEqual(head_fc.capacity, 1, "Frequency cache capacity is not 1")
+        self.assertEqual(head_fc.size, 0, "Frequency cache size is not 0")
+        self.assertEqual(head_fc.top_level_frequency, 0, "Frequency cache top level frequency is incorrect")
 
 if __name__ == '__main__':
     unittest.main()
