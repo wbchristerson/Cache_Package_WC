@@ -104,6 +104,7 @@ class TestLRUCache(unittest.TestCase):
 class TestLFUCache(unittest.TestCase):
     def setUp(self):
         self.lfu_cache_1 = LFUCache(1)
+        self.lfu_cache_2 = LFUCache(2)
 
     def test_capacity_one(self):
         self.assertEqual(self.lfu_cache_1.size, 0, "Initial size of cache 1 is not 0")
@@ -149,6 +150,29 @@ class TestLFUCache(unittest.TestCase):
         self.lfu_cache_1.put_key_value(3, 9)
         self.lfu_cache_1.put_key_value(3, 10)
         self.assertEqual(self.lfu_cache_1.get_value(3), 10, "Incorrect entry value")
+
+    def test_capacity_two_operations(self):
+        self.assertEqual(self.lfu_cache_2.get_value(1), None, "Entry not in cache has non-None value")
+        self.lfu_cache_2.put_key_value(1, 3)
+        self.assertEqual(self.lfu_cache_2.get_value(1), 3, "Incorrect entry value")
+        self.lfu_cache_2.get_value(1)
+        self.lfu_cache_2.put_key_value(2, 5)
+        self.lfu_cache_2.put_key_value(3, 7)
+        self.assertEqual(self.lfu_cache_2.get_value(1), 3, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_2.get_value(2), None, "Evicted entry value is not None")
+        self.assertEqual(self.lfu_cache_2.get_value(3), 7, "Incorrect entry value")
+
+        self.lfu_cache_2.put_key_value(3, 8)
+        self.assertEqual(self.lfu_cache_2.get_value(3), 8, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_2.get_value(1), 3, "Incorrect entry value")
+
+        self.lfu_cache_2.get_value(3)
+        self.lfu_cache_2.put_key_value(4, 9)
+        
+        self.assertEqual(self.lfu_cache_2.get_value(1), None, "Evicetd entry value is not None")
+        self.assertEqual(self.lfu_cache_2.get_value(2), None, "Evicted entry value is not None")
+        self.assertEqual(self.lfu_cache_2.get_value(3), 8, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_2.get_value(4), 9, "Incorrect entry value")
 
 if __name__ == '__main__':
     unittest.main()
