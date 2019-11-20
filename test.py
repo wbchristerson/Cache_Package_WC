@@ -119,9 +119,36 @@ class TestLFUCache(unittest.TestCase):
         self.assertEqual(self.lfu_cache_1.tail.next, None, "Tail does not have None next")
 
         head_fc = self.lfu_cache_1.head.frequency_cache
-        self.assertEqual(head_fc.capacity, 1, "Frequency cache capacity is not 1")
-        self.assertEqual(head_fc.size, 0, "Frequency cache size is not 0")
-        self.assertEqual(head_fc.top_level_frequency, 0, "Frequency cache top level frequency is incorrect")
+        self.assertEqual(head_fc.capacity, 1, "Head frequency cache capacity is not 1")
+        self.assertEqual(head_fc.size, 0, "Head frequency cache size is not 0")
+        self.assertEqual(head_fc.top_level_frequency, 0, "Head frequency cache top level frequency is incorrect")
+
+        tail_fc = self.lfu_cache_1.tail.frequency_cache
+        self.assertEqual(tail_fc.capacity, 1, "Tail frequency cache capacity is not 1")
+        self.assertEqual(tail_fc.size, 0, "Tail frequency cache size is not 0")
+        self.assertEqual(tail_fc.top_level_frequency, 0, "Tail frequency cache top level frequency is incorrect")
+
+    def test_capacity_one_operations(self):
+        self.assertEqual(self.lfu_cache_1.get_value(3), None, "Entry not in cache has non-None value")
+        self.lfu_cache_1.put_key_value(4, 9)
+        self.assertEqual(self.lfu_cache_1.get_value(3), None, "Entry not in cache has non-None value")
+        self.assertEqual(self.lfu_cache_1.get_value(4), 9, "Incorrect entry value")
+        self.lfu_cache_1.put_key_value(2, 5)
+        self.assertEqual(self.lfu_cache_1.get_value(3), None, "Entry not in cache has non-None value")
+        self.assertEqual(self.lfu_cache_1.get_value(4), None, "Evicted entry value is not None")
+        self.assertEqual(self.lfu_cache_1.get_value(2), 5, "Incorrect entry value")
+        self.lfu_cache_1.get_value(2)
+        self.lfu_cache_1.get_value(2)
+        self.lfu_cache_1.put_key_value(3, 7)
+        self.assertEqual(self.lfu_cache_1.get_value(2), None, "Evicted entry value is not None")
+        self.assertEqual(self.lfu_cache_1.get_value(3), 7, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_1.get_value(4), None, "Evicted entry value is not None")
+        self.lfu_cache_1.get_value(3)
+        self.lfu_cache_1.put_key_value(3, 8)
+        self.assertEqual(self.lfu_cache_1.get_value(3), 8, "Incorrect entry value")
+        self.lfu_cache_1.put_key_value(3, 9)
+        self.lfu_cache_1.put_key_value(3, 10)
+        self.assertEqual(self.lfu_cache_1.get_value(3), 10, "Incorrect entry value")
 
 if __name__ == '__main__':
     unittest.main()

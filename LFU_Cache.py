@@ -23,13 +23,28 @@ class LFUCache(Cache):
                 is updated
         """
         if self.is_key_in_cache(key):
-            node_entry, frequency_node = self.__remove_key(key)
+            entry_node, frequency_node = self.__remove_key(key)
             if frequency_node.next.key != frequency_node.key + 1:
                 self.__create_frequency_node_after(frequency_node)
-            self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
-            return node_entry.value
+            new_frequency_node = frequency_node.next
+            self.__add_entry_to_frequency_node(entry_node, new_frequency_node)
+            if frequency_node.frequency_cache.size == 0:
+                self.__remove_frequency_node(frequency_node)
+            self.key_to_frequency_node[key] = new_frequency_node
+            return entry_node.value
         else:
             return None
+
+    def __remove_frequency_node(self, frequency_node):
+        """Function to remove an existent frequency_node from the cache
+
+            Args:
+                frequency_node (LFUNode) - node to remove
+
+            Returns:
+                None
+        """
+        frequency_node.remove_node()
 
     def put_key_value(self, key, value):
         """Function to place a key and an associated value into the cache,
@@ -48,6 +63,7 @@ class LFUCache(Cache):
             entry_node.value = value
             if entry_frequency_node.next.key != entry_frequency_node.key + 1:
                 self.__create_frequency_node_after(entry_frequency_node)
+            self.key_to_frequency_node[entry_node.key] = entry_frequency_node.next
             self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
         elif self.is_at_capacity():
             self.__evict_least_frequent_entry()
@@ -55,7 +71,7 @@ class LFUCache(Cache):
         else:
             self.__add_new_entry(key, value)
 
-    def __add_entry_to_frequency_node(entry_node, frequency_node):
+    def __add_entry_to_frequency_node(self, entry_node, frequency_node):
         """Given an LRUCache node entry_node and a frequency_node, insert
             entry_node into frequency_node's LRU cache
 
@@ -74,7 +90,7 @@ class LFUCache(Cache):
         entry_node.add_node_after(y.head)
         y.key_node_map[entry_node.key] = entry_node
 
-    def __remove_key(key):
+    def __remove_key(self, key):
         """Function to remove the node corresponding to a specific key from the
             cache; it is assumed that the key is present in the cache
 
@@ -94,7 +110,7 @@ class LFUCache(Cache):
         del self.key_to_frequency_node[key]
         return entry_node, entry_frequency_node
 
-    def __create_frequency_node_after(frequency_node):
+    def __create_frequency_node_after(self, frequency_node):
         """Function to create a new top-level frequency node which has frequency
             key one more than that of the given frequency_node; it is assumed
             that the frequency frequency_node.key + 1 does not exist in the
@@ -108,7 +124,7 @@ class LFUCache(Cache):
         """
         current_frequency = frequency_node.key
         new_entry = LFUNode(current_frequency+1, self.capacity)
-        self.key_to_frequency_node[current_frequency+1] = new_entry
+        # self.key_to_frequency_node[current_frequency+1] = new_entry
         new_entry.add_node_after(frequency_node)
 
     def __add_new_entry(self, key, value):
@@ -123,7 +139,7 @@ class LFUCache(Cache):
                 LRUNode - the LRUNode corresponding to the created entry
         """
         if not self.__has_frequency_one():
-            frequency_one = LFUNode(key, self.capacity)
+            frequency_one = LFUNode(1, self.capacity)
             frequency_one.add_node_after(self.head)
         self.size += 1
         self.key_node_map[key] = self.head.next.frequency_cache.put_key_value_internally(key, value)
@@ -148,7 +164,7 @@ class LFUCache(Cache):
         del self.key_node_map[removed_node.key] # remove from self.key_node_map
         del self.key_to_frequency_node[removed_node.key] # remove from self.key_to_frequency_node
         if least_frequent_group.size == 0: # if frequency group now empty, remove it
-            self.head.next.remove_node()
+            self.__remove_frequency_node(self.head.next)
         return removed_node
 
     def __has_frequency_one(self):
