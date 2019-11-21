@@ -77,12 +77,8 @@ class LFUCache(Cache):
                 self.__create_frequency_node_after(entry_frequency_node)
             self.key_to_frequency_node[entry_node.key] = entry_frequency_node.next
             self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
-
-
             if entry_frequency_node.frequency_cache.size == 0: # if frequency group now empty, remove it
                 self.__remove_frequency_node(entry_frequency_node)
-
-
         elif self.is_at_capacity():
             self.__evict_least_frequent_entry()
             self.__add_new_entry(key, value)
