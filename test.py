@@ -163,12 +163,13 @@ class TestLFUCache(unittest.TestCase):
         self.assertEqual(self.lfu_cache_2.get_value(3), 7, "Incorrect entry value")
 
         self.lfu_cache_2.put_key_value(3, 8)
+        print(self.lfu_cache_2)
         self.assertEqual(self.lfu_cache_2.get_value(3), 8, "Incorrect entry value")
         self.assertEqual(self.lfu_cache_2.get_value(1), 3, "Incorrect entry value")
 
         self.lfu_cache_2.get_value(3)
         self.lfu_cache_2.put_key_value(4, 9)
-        
+
         self.assertEqual(self.lfu_cache_2.get_value(1), None, "Evicetd entry value is not None")
         self.assertEqual(self.lfu_cache_2.get_value(2), None, "Evicted entry value is not None")
         self.assertEqual(self.lfu_cache_2.get_value(3), 8, "Incorrect entry value")

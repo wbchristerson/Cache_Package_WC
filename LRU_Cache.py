@@ -8,6 +8,15 @@ class LRUCache(Cache):
         self.tail = LRUNode(0, 0)
         self.tail.add_node_after(self.head)
 
+    def __repr__(self):
+        res = "Nodes:\n"
+        curr_node = self.head.next
+        while curr_node != self.tail:
+            res += str(curr_node) + "\n"
+            curr_node = curr_node.next
+        res += "\n"
+        return res
+
     def get_value(self, key):
         """Function to retrieve value associated with a key if it exists,
             updating to reflect its recent usage

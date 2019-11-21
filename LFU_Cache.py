@@ -10,6 +10,18 @@ class LFUCache(Cache):
         self.tail.add_node_after(self.head)
         self.key_to_frequency_node = dict()
 
+    def __repr__(self):
+        res = "LFU Cache:\n"
+        res += "----------\n"
+        res += "Capacity: " + str(self.capacity) + "\n"
+        res += "Size: " + str(self.size) + "\n"
+        res += "Key-Node-Map: " + str(self.key_node_map) + "\n\n"
+        curr_node = self.head.next
+        while curr_node != self.tail:
+            res += str(curr_node) + "\n\n"
+            curr_node = curr_node.next
+        return res
+
     def get_value(self, key):
         """Function to retrieve value associated with a key if it exists,
             updating to reflect its recent usage
@@ -65,6 +77,12 @@ class LFUCache(Cache):
                 self.__create_frequency_node_after(entry_frequency_node)
             self.key_to_frequency_node[entry_node.key] = entry_frequency_node.next
             self.__add_entry_to_frequency_node(entry_node, entry_frequency_node.next)
+
+
+            if entry_frequency_node.frequency_cache.size == 0: # if frequency group now empty, remove it
+                self.__remove_frequency_node(entry_frequency_node)
+
+
         elif self.is_at_capacity():
             self.__evict_least_frequent_entry()
             self.__add_new_entry(key, value)

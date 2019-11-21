@@ -7,4 +7,7 @@ class LFUNode(CacheNode):
         self.frequency_cache = SubLRUCache(capacity, key)
 
     def __repr__(self):
-        return f"(key: {self.key})"
+        res = "Frequency: " + str(self.key) + "\n"
+        res += "Sub LRU Cache:\n"
+        res += str(self.frequency_cache)
+        return res
