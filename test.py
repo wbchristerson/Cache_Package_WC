@@ -192,5 +192,17 @@ class TestLFUCache(unittest.TestCase):
         self.assertEqual(self.lfu_cache_3.get_value(5), None, "Evicted entry value is not None")
         self.assertEqual(self.lfu_cache_3.get_value(4), 9, "Incorrect entry value")
 
+        self.assertEqual(self.lfu_cache_3.get_value(6), 13, "Inocrrect entry value")
+        self.assertEqual(self.lfu_cache_3.get_value(7), 15, "Incorrect entry value")
+        self.lfu_cache_3.get_value(4)
+        self.lfu_cache_3.get_value(4)
+        self.lfu_cache_3.get_value(4)
+        self.lfu_cache_3.get_value(4)
+        self.lfu_cache_3.put_key_value(8, 23)
+        self.assertEqual(self.lfu_cache_3.get_value(4), 9, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_3.get_value(6), None, "Evicted entry value is not None")
+        self.assertEqual(self.lfu_cache_3.get_value(7), 15, "Incorrect entry value")
+        self.assertEqual(self.lfu_cache_3.get_value(8), 23, "Incorrect entry value")
+
 if __name__ == '__main__':
     unittest.main()
