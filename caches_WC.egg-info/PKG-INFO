@@ -1,0 +1,10 @@
+Metadata-Version: 1.0
+Name: caches-WC
+Version: 0.1
+Summary: LRU cache and LFU cache implementations
+Home-page: UNKNOWN
+Author: William Christerson
+Author-email: wbchristerson@gmail.com
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
