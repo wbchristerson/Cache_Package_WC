@@ -1,7 +1,7 @@
 class Cache:
     """Basic cache class for use as super classes of LRU and LFU caches"""
     def __init__(self, capacity = 10):
-        if capacity <= 0:
+        if capacity <= 0 or int(capacity) != capacity:
             raise ValueError("Capacity must be positive")
         self.capacity = capacity
         self.size = 0
