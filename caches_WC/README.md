@@ -119,5 +119,5 @@ Alternatively, to download the original module files
  you can clone the `master` branch of this repository.
 
 To use the package in a project, remember to import it as `caches_WC`, not
-`caches-WC`. `caches-WC` should only be used when insalling the package from
+`caches-WC`. `caches-WC` should only be used when installing the package from
 PyPI.
