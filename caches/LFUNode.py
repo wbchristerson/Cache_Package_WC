@@ -1,5 +1,5 @@
-from SubLRUCache import SubLRUCache
-from CacheNode import CacheNode
+from .SubLRUCache import SubLRUCache
+from .CacheNode import CacheNode
 
 class LFUNode(CacheNode):
     def __init__(self, key, capacity, prev = None, next = None):

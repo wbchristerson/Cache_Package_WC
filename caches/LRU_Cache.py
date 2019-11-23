@@ -1,5 +1,5 @@
-from Cache import Cache
-from LRUNode import LRUNode
+from .Cache import Cache
+from .LRUNode import LRUNode
 
 class LRUCache(Cache):
     def __init__(self, capacity):

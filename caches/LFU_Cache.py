@@ -1,6 +1,6 @@
-from Cache import Cache
-from LFUNode import LFUNode
-from LRUNode import LRUNode
+from .Cache import Cache
+from .LFUNode import LFUNode
+from .LRUNode import LRUNode
 
 class LFUCache(Cache):
     def __init__(self, capacity):

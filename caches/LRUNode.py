@@ -1,4 +1,4 @@
-from CacheNode import CacheNode
+from .CacheNode import CacheNode
 
 class LRUNode(CacheNode):
     def __init__(self, key, value, prev = None, next = None):

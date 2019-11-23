@@ -1,11 +1,11 @@
 import unittest
 
-from CacheNode import CacheNode
-from LRUNode import LRUNode
-from LFUNode import LFUNode
-from Cache import Cache
-from LRU_Cache import LRUCache
-from LFU_Cache import LFUCache
+from .CacheNode import CacheNode
+from .LRUNode import LRUNode
+from .LFUNode import LFUNode
+from .Cache import Cache
+from .LRU_Cache import LRUCache
+from .LFU_Cache import LFUCache
 
 class TestCacheNode(unittest.TestCase):
     def setUp(self):
