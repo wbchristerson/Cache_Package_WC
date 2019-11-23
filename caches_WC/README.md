@@ -109,11 +109,15 @@ If `key` exists in the cache, its corresponding value is set to `value`. If
 least frequently used). The frequency tally of the entry corresponding to `key`
 is updated accordingly. Again, `key` must be hashable.
 
-## Downloading
+## Installation
 
 The package is available on PyPI. If you have the Python package manager `pip`, the package can be installed at the terminal with the following command:
 
-```pip install caches_WC```
+```pip install caches-WC```
 
 Alternatively, to download the original module files
  you can clone the `master` branch of this repository.
+
+To use the package in a project, remember to import it as `caches_WC`, not
+`caches-WC`. `caches-WC` should only be used when insalling the package from
+PyPI.
