@@ -111,7 +111,8 @@ is updated accordingly. Again, `key` must be hashable.
 
 ## Downloading
 
-If you have the Python package manager `pip`, the package can be installed at the terminal with the following command:
+The package is available on PyPI. If you have the Python package manager `pip`,
+the package can be installed at the terminal with the following command:
 
 ```pip install caches_WC```
 
